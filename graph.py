@@ -1,5 +1,6 @@
 import re
 
+import urllib
 import click
 import networkx as nx
 import toolz
@@ -35,6 +36,9 @@ def cli(path, exclude, engine):
             try:
                 zettel2 = link["resolvedRelTarget"]["contents"].removesuffix(
                     ".html") + ".md"
+                # Since resolvedRelTargets are URL encoded, we have to decode
+                # them (e.g. spaces are %20).
+                zettel2 = urllib.parse.unquote(zettel2)
             except KeyError:
                 pass
             if pred(zettel2):
