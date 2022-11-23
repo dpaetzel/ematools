@@ -13,7 +13,12 @@ from ematools import fetch_zettels
 @click.option("--path", "-p", default="")
 @click.option("--exclude", "-e", default=None)
 @click.option("--engine", default="fdp")
-def cli(path, exclude, engine):
+@click.option(
+    "--include-edge-zettels/--exclude-edge-zettels",
+    default=False,
+    help=("Whether to include excluded Zettels that are linked by included "
+          "Zettels (if this is on, they are marked in blue)"))
+def cli(path, exclude, engine, include_edge_zettels):
     if exclude is None:
         exclude = f"^{r'.*/' * (path.count('/') + 1 + (not path.endswith('/')))}.*$"
     print(f"Using exclusion rule {exclude} …")
@@ -26,11 +31,11 @@ def cli(path, exclude, engine):
         # Always throw away archive.
         not re.match("/?Archive/", key))
 
-    zettels = {key: zettels[key] for key in zettels if pred(key)}
+    zettels_filtered = {key: zettels[key] for key in zettels if pred(key)}
 
     graph = nx.DiGraph()
 
-    for zettel in tqdm(zettels, desc="Building graph"):
+    for zettel in tqdm(zettels_filtered, desc="Building graph"):
         graph.add_node(zettel, label=zettels[zettel]["title"])
         for link in zettels[zettel]["links"]:
             try:
@@ -41,8 +46,11 @@ def cli(path, exclude, engine):
                 zettel2 = urllib.parse.unquote(zettel2)
             except KeyError:
                 pass
-            if pred(zettel2):
-                graph.add_edge(zettel, zettel2)
+            if zettel2 not in zettels_filtered and include_edge_zettels:
+                graph.add_node(zettel2,
+                               color="blue",
+                               label=zettels[zettel2]["title"])
+            graph.add_edge(zettel, zettel2)
 
     print("Marking unreachable notes …")
     degs = dict(graph.in_degree())
