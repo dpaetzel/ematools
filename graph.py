@@ -10,9 +10,15 @@ from ematools import fetch_zettels
 
 
 @click.command()
-@click.option("--path", "-p", default="")
-@click.option("--exclude", "-e", default=None)
-@click.option("--engine", default="fdp")
+@click.option("--path",
+              "-p",
+              default="",
+              help="Only Zettels with this prefix are included")
+@click.option("--exclude",
+              "-e",
+              default=None,
+              help="Regular expression, Zettels matching this are excluded")
+@click.option("--engine", default="fdp", help="Graphviz layout engine to use")
 @click.option(
     "--include-edge-zettels/--exclude-edge-zettels",
     default=False,
