@@ -2,12 +2,11 @@
   inputs = {
     # I typically use the exact nixpkgs set that I use for building my current
     # system to avoid redundancy.
-    nixos-config.url = "github:dpaetzel/nixos-config";
+    nixpkgs.url = "github:dpaetzel/nixpkgs/dpaetzel/nixos-config";
   };
 
-  outputs = { self, nixos-config }:
+  outputs = { self, nixpkgs }:
     let
-      nixpkgs = nixos-config.inputs.nixpkgs;
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
       python = pkgs.python310;
