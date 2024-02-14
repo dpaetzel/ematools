@@ -26,11 +26,11 @@ PYTHONPATH=src:$PYTHONPATH python graph.py --path "" --engine fdp
 which generates the graph of all Zettels in your top-level Zettel directory
 which looks something like (see the generated SVG file)
 
-![[Example.svg]]
+![Example of a graph of the links of the example Zettelkasten](./Example.svg)
 
 
-Note that isolated Zettels that are not linked to by any other Zettel have a red
-border.
+*Note that isolated Zettels that are not linked to by any other Zettel have a red
+border.*
 
 
 You can also inspect a partial graph only (relevant if your Zettelkasten is
@@ -38,13 +38,13 @@ large) by restricting set of Zettels from which links are considered to
 a subdirectory by setting the path to something different than `""`, e.g.
 
 ```
-PYTHONPATH=src:$PYTHONPATH python graph.py --path "2" --engine fdp
+PYTHONPATH=src:$PYTHONPATH python graph.py --path "Subdirectory" --engine fdp
 ```
 
 which generates a graph from the top-level Zettel which looks something like
 (see the generated SVG file)
 
-![[Example2.svg]]
+![Example of a partial graph of the links of the example Zettelkasten](./Example2.svg)
 
 
 
