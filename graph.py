@@ -82,10 +82,15 @@ def cli(path, exclude, engine, include_edge_zettels):
             # If `zettel2` is also not a discarded Zettel, always add an edge.
             if zettel2 in zettels_filtered:
                 graph.add_edge(zettel, zettel2)
-            # … otherwise, only add an edge if we opetd to include edges to filtered Zettels.
-            elif include_edge_zettels:
+            # … otherwise, only add an edge if we opted to include edges to
+            # filtered Zettels. But never add an edge to Zettels not returned by
+            # `fetch_zettels` (e.g. static files or internal API pseudo-Zettels
+            # like `"-/tags/something.md"`).
+            elif include_edge_zettels and zettel2 in zettels:
                 graph.add_node(zettel2, color="blue", label=zettels[zettel2]["title"])
                 graph.add_edge(zettel, zettel2)
+            else:
+                print(f'Excluding "{zettel2}".')
 
     print("Marking unreachable notes …")
     degs = dict(graph.in_degree())
