@@ -1,3 +1,21 @@
+# Script to create an SVG graph of parts of your emanote Zettelkasten.
+#
+# Copyright (C) 2024 David Pätzel <david.paetzel@posteo.de>
+#
+# This file is part of ematools.
+#
+# ematools is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# ematools is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# ematools. If not, see <https://www.gnu.org/licenses/>.
+
 # TODO Consider using https://click.palletsprojects.com/en/8.1.x/setuptools/
 import re
 
