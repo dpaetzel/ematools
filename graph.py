@@ -79,23 +79,42 @@ def cli(path, exclude, engine, include_edge_zettels):
                 zettel2 = urllib.parse.unquote(zettel2)
             except KeyError:
                 pass
-            # If `zettel2` is also not a discarded Zettel, always add an edge.
-            if zettel2 in zettels_filtered:
-                graph.add_edge(zettel, zettel2)
-            # … otherwise, only add an edge if we opted to include edges to
-            # filtered Zettels. But never add an edge to Zettels not returned by
-            # `fetch_zettels` (e.g. static files or internal API pseudo-Zettels
-            # like `"-/tags/something.md"`).
-            elif include_edge_zettels and zettel2 in zettels:
-                graph.add_node(zettel2, color="blue", label=zettels[zettel2]["title"])
-                graph.add_edge(zettel, zettel2)
-            else:
-                print(f'Excluding "{zettel2}".')
+
+            # But consider Zettels not returned by `fetch_zettels` (e.g. static
+            # files or internal API pseudo-Zettels like
+            # `"-/tags/something.md"`).
+            if zettel2 in zettels:
+                attr_unvisited = (
+                    dict(fillcolor="skyblue", style="filled")
+                    if "unvisited" in zettels[zettel2]["meta"]["tags"]
+                    else {}
+                )
+
+                # If `zettel2` is not a discarded Zettel, always add an edge.
+                if zettel2 in zettels_filtered:
+                    graph.add_node(
+                        zettel2, label=zettels[zettel2]["title"], **attr_unvisited
+                    )
+                    graph.add_edge(zettel, zettel2)
+
+                # … otherwise, only add an edge if we opted to include edges to
+                # discarded Zettels.
+                elif include_edge_zettels:
+                    # Color edge nodes' lines.
+                    graph.add_node(
+                        zettel2,
+                        color="blue",
+                        label=zettels[zettel2]["title"],
+                        **attr_unvisited,
+                    )
+                    graph.add_edge(zettel, zettel2)
+                else:
+                    print(f'Excluding "{zettel2}".')
 
     print("Marking unreachable notes …")
     degs = dict(graph.in_degree())
     unreachable_zettels = toolz.valfilter(lambda deg: deg == 0, degs).keys()
-    graph.add_nodes_from(unreachable_zettels, color="red")
+    graph.add_nodes_from(unreachable_zettels, fillcolor="orange", style="filled")
 
     print("Generating SVG …")
     agraph = nx.nx_agraph.to_agraph(graph)
