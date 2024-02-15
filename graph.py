@@ -79,6 +79,9 @@ def cli(path, exclude, engine, include_edge_zettels):
                 zettel2 = urllib.parse.unquote(zettel2)
             except KeyError:
                 pass
+            except AttributeError:
+                print(f"{zettel} is broken (probably a broken link?), ignoring it …")
+                continue
 
             # But consider Zettels not returned by `fetch_zettels` (e.g. static
             # files or internal API pseudo-Zettels like
